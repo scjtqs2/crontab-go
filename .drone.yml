@@ -62,8 +62,8 @@ steps:
       - GOOS=windows GOARCH=arm GOARM=7 go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_windows_arm.exe
       - GOOS=darwin GOARCH=arm64        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_darwin_arm64
       - GOOS=darwin GOARCH=amd64        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_darwin_amd64
-      - GOOS=android GOARCH=arm   GOARM=7      go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm
-      - GOOS=android GOARCH=arm64       go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm64
+#      - GOOS=android GOARCH=arm   GOARM=7      go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm
+#      - GOOS=android GOARCH=arm64       go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm64
     depends_on:
       - buildtest
     when:
