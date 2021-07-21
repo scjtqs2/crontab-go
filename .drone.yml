@@ -1,0 +1,101 @@
+kind: pipeline
+type: docker
+name: default
+
+# 限制 amd64的runner 执行本脚本。
+#platform:
+#  os: linux
+#  arch: amd64
+
+clone:
+  depth: 1
+  disable: true
+
+steps:
+
+  # 从github拉取代码 加上代理
+  - name: clone
+    image: alpine/git
+    pull: if-not-exists
+    commands:
+      - git clone --depth 1 https://hub.fastgit.org/scjtqs/crontab-go.git -b $DRONE_BRANCH .
+
+        
+  - name: buildtest
+    image: golang:1.16-alpine
+    pull: if-not-exists
+    commands:
+      - go env -w GOPROXY="http://goproxy.cn,direct"
+      - go env -w GO111MODULE=on
+#      - sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+#      - apk add --no-cache git make
+      - go mod tidy
+      - CGO_ENABLED=0 go build  -ldflags  "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_BRANCH.$DRONE_COMMIT"  -o test
+      - ./test -h
+    depends_on:
+      - clone
+
+  # go build
+  - name: build
+    image: golang:1.16-alpine
+    pull: if-not-exists
+    commands:
+      - rm -rf dist
+      - go env -w GOPROXY="http://goproxy.cn,direct"
+      - go env -w GO111MODULE=on
+#      - sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+#      - apk add --no-cache make git
+      - go mod tidy
+      - go env -w CGO_ENABLED=0
+      - GOOS=linux GOARCH=amd64    go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_amd64
+      - GOOS=linux GOARCH=386           go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_386
+      - GOOS=linux GOARCH=arm   GOARM=7 go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"   -o dist/crontab-go_linux_armv7
+      - GOOS=linux GOARCH=arm64         go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"   -o dist/crontab-go_linux_arm64
+      - GOOS=linux GOARCH=ppc64         go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_ppc64
+      - GOOS=linux GOARCH=ppc64le       go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_ppc64le
+      - GOOS=linux GOARCH=mips          go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_mips
+      - GOOS=linux GOARCH=mipsle        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_mipsle
+      - GOOS=linux GOARCH=mips64        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_mips64
+      - GOOS=linux GOARCH=mips64le      go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_linux_mips64le
+      - GOOS=windows GOARCH=386         go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"   -o dist/crontab-go_windows_386.exe
+      - GOOS=windows GOARCH=amd64       go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_windows_adm64.exe
+      - GOOS=windows GOARCH=arm GOARM=7 go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_windows_arm.exe
+      - GOOS=darwin GOARCH=arm64        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_darwin_arm64
+      - GOOS=darwin GOARCH=amd64        go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_darwin_amd64
+      - GOOS=android GOARCH=arm   GOARM=7      go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm
+      - GOOS=android GOARCH=arm64       go build  -ldflags   "-w -s -X main.Build=`date +%FT%T%z` -X main.Version=$DRONE_TAG.$DRONE_COMMIT"  -o dist/crontab-go_android_arm64
+    depends_on:
+      - buildtest
+    when:
+      event: tag
+#    volumes:
+#      - name: dockersock
+#        path: /var/run
+
+  # 发布github的resease
+  - name: publish
+    image: plugins/github-release
+    pull: if-not-exists
+    settings:
+      api_key:
+        from_secret: github_token
+      files: dist/*
+#      title: v1.0.0
+#      note:  "第一个公开版本，只提取cookie，不带推送更新cookie到服务器"
+#      draft: true
+#      overwrite: true
+    when:
+      event: tag
+    depends_on:
+      - build
+
+
+
+trigger:
+#  branch:
+#    - master
+  event:
+    - custom
+    - push
+    - cron
+    - tag

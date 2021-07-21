@@ -19,8 +19,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/robfig/cron/v3 v3.0.1 h1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=
 github.com/robfig/cron/v3 v3.0.1/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
-github.com/scjtqs/utils v0.0.0-20210721022701-55dcf42b2e48 h1:sTavdNz1ehltdnZ1t2pfkcJDObfWA8DmYi/9SH2iHyw=
-github.com/scjtqs/utils v0.0.0-20210721022701-55dcf42b2e48/go.mod h1:fPPucZhJ/LocHN90IpqLVEg5KUxujfCJ3NAEqMb7oZg=
+github.com/scjtqs/utils v0.0.0-20210721044355-610ada9b6ca7 h1:Q+xTKNvBe7sO1F4QdMdxCaat7tycI71LOd/sJvwrQgQ=
+github.com/scjtqs/utils v0.0.0-20210721044355-610ada9b6ca7/go.mod h1:2V03HYBormi7LuQw1hM9J0niY6+CWalwahx6aBAtRw0=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/sirupsen/logrus v1.8.1 h1:dJKuHgqk1NNQlqoA6BTlM1Wf9DOH3NBjQyu0h9+AZZE=
 github.com/sirupsen/logrus v1.8.1/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
