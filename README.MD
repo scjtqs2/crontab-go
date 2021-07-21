@@ -17,3 +17,22 @@ crontab:
   command: echo 'hello !!!'
 ```
 
+## how to build
+> 一键式的编译
+- install make、golang、git 安装 make、golang环境、git
+- make  执行make命令
+- you can find ./dist/crontab 
+
+> 直接编译
+- go build -o crontab 得到 crontab。
+
+## how to use manually
+> crontab-go -h 查看命令行用法。
+> 
+> crontab-go -c /home/yourpath/config.yaml 指定自定义配置文件地址
+> 
+> crontab-go -d 后台运行
+> 
+> eg： crontab-go -c /a/b/c/cf.yml -d
+> 
+
