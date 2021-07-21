@@ -7,7 +7,7 @@ LDFLAGS=-ldflags " -s -X main.Build=${BUILD} -X main.Version=${Version}.${COMMIT
 build :
 	rm -rf dist
 	mkdir dist
-	CGO_ENABLED=1 CGO_LDFLAGS="-static" packr2 build  ${LDFLAGS} -installsuffix cgo -o ./dist/jdcookie .
+	CGO_ENABLED=0  go build  ${LDFLAGS} ./dist/crontab .
 	chmod -R +x ./dist
 
 clean:
