@@ -16,4 +16,4 @@ require (
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 )
 
-//replace github.com/scjtqs/utils => /Users/apple/Workspace/git/utils-github
+replace github.com/scjtqs/utils => github.com/scjtqs2/utils v0.0.0-20210721044355-610ada9b6ca7
